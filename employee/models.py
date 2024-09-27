@@ -4,18 +4,23 @@ from django.db.models import Max
 
 class Employee(models.Model):
     class Gender(models.TextChoices):
-        MALE = "1"
-        FEMALE = "2"
+        MALE = "M"
+        FEMALE = "F"
 
     id = models.CharField(primary_key=True, editable=False, max_length=9)
     name = models.CharField(max_length=10)
     email_address = models.EmailField()
     phone_number = models.IntegerField()
     gender = models.CharField(choices=Gender.choices, max_length=2)
-    employee_cafe = models.OneToOneField("cafe.EmployeeCafe", on_delete=models.SET_NULL,
-                                         null=True, blank=True, related_name='emp')
 
     def save(self, **kwargs) -> None:
         if not self.id:
-            max = Employee.objects.aggregate(id_max=Max('id'))['id_max']
-            self.id = "{}{:07d}".format('UI', max if max is not None else 1)
+            id_max = Employee.objects.aggregate(id_max=Max('id'))['id_max']
+            if id_max is not None:
+                id_max_split = id_max.split("UI")
+                if len(id_max_split) > 1:
+                    id_max_int = int(id_max.split("UI")[1])
+                    self.id = "{}{:07d}".format('UI', id_max_int + 1)
+            else:
+                self.id = "{}{:07d}".format('UI', 1)
+        super().save(**kwargs)
