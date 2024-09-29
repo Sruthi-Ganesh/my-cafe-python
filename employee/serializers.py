@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from cafe.models import EmployeeCafe, Cafe
+from cafe.serializers import EmployeeCafeSerializer
 from employee.models import Employee
 
 
@@ -70,16 +71,15 @@ class EmployeeUpdateSerializer(serializers.ModelSerializer):
 
 
 class EmployeeListSerializer(serializers.ModelSerializer):
-    cafe = serializers.SerializerMethodField()
+    cafe = EmployeeCafeSerializer(source="employee_cafe")
     days_worked = serializers.DecimalField(max_digits=10, decimal_places=4)
+    gender = serializers.SerializerMethodField()
 
-    def get_cafe(self, obj: Employee):
-        employee_cafe = getattr(obj, "employee_cafe", None)
-        if employee_cafe is not None:
-            return employee_cafe.cafe.name
-        return None
+    def get_gender(self, obj: Employee):
+        return obj.get_gender_display().upper() if obj.gender else None
 
     class Meta:
         model = Employee
-        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe",
+        fields = ["id", "name", "email_address", "phone_number", "gender",
+                  "cafe",
                   "days_worked"]

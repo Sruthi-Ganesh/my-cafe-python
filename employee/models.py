@@ -10,7 +10,7 @@ class Employee(models.Model):
     id = models.CharField(primary_key=True, editable=False, max_length=9)
     name = models.CharField(max_length=10)
     email_address = models.EmailField()
-    phone_number = models.IntegerField()
+    phone_number = models.CharField(max_length=20)
     gender = models.CharField(choices=Gender.choices, max_length=2)
 
     def save(self, **kwargs) -> None:
