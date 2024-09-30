@@ -6,7 +6,7 @@ from employee.models import Employee
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    cafe_id = serializers.UUIDField(required=False)
+    cafe_id = serializers.UUIDField(required=False, allow_null=True)
 
     def create(self, validated_data: dict):
         cafe_id = validated_data.pop("cafe_id", None)
