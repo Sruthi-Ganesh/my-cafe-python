@@ -9,7 +9,7 @@ from common.utils.files import validate_file
 
 class EmployeeCafeSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="cafe.id")
-    name = serializers.UUIDField(source="cafe.name")
+    name = serializers.CharField(source="cafe.name")
 
     class Meta:
         model = EmployeeCafe
@@ -19,9 +19,15 @@ class EmployeeCafeSerializer(serializers.ModelSerializer):
 class CafeSerializer(serializers.ModelSerializer):
     location = CountryField()
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.update(
+            {'location': COUNTRIES[instance.location] if instance.location else None})
+        return data
+
     class Meta:
         model = Cafe
-        fields = ["id", "name", "description", "location"]
+        fields = ["id", "name", "description", "location", "logo"]
         read_only_fields = ["id"]
 
 

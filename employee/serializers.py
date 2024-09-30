@@ -5,8 +5,23 @@ from cafe.serializers import EmployeeCafeSerializer
 from employee.models import Employee
 
 
+class EmployeeTemplateRequestSerializer(serializers.Serializer):
+    class Meta:
+        model = Employee
+        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe_id"]
+        read_only_fields = ["id"]
+
+
+class EmployeeTemplateResponseSerializer(serializers.Serializer):
+    class Meta:
+        model = Employee
+        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe"]
+        read_only_fields = ["id", "cafe"]
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
-    cafe_id = serializers.UUIDField(required=False, allow_null=True)
+    cafe_id = serializers.UUIDField(required=False, allow_null=True, write_only=True)
+    cafe = EmployeeCafeSerializer(source='employee_cafe', read_only=True)
 
     def create(self, validated_data: dict):
         cafe_id = validated_data.pop("cafe_id", None)
@@ -25,17 +40,22 @@ class EmployeeSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         employee_cafe = getattr(instance, "employee_cafe", None)
         data.update(
-            {"cafe_id": employee_cafe.cafe_id if employee_cafe is not None else None})
+            {"cafe_id": employee_cafe.cafe_id
+            if employee_cafe is not None else None,
+             "gender": instance.get_gender_display().upper()
+             if instance.gender else None})
         return data
 
     class Meta:
         model = Employee
-        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe_id"]
-        read_only_fields = ["id"]
+        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe_id",
+                  "cafe"]
+        read_only_fields = ["id", "cafe"]
 
 
 class EmployeeUpdateSerializer(serializers.ModelSerializer):
-    cafe_id = serializers.UUIDField(required=False)
+    cafe_id = serializers.UUIDField(required=False, allow_null=True, write_only=True)
+    cafe = EmployeeCafeSerializer(source='employee_cafe', read_only=True)
 
     def update(self, employee, validated_data):
         cafe_id = validated_data.pop("cafe_id", None)
@@ -62,12 +82,18 @@ class EmployeeUpdateSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         employee_cafe = getattr(instance, "employee_cafe", None)
         data.update(
-            {"cafe_id": employee_cafe.cafe_id if employee_cafe is not None else None})
+            {"cafe_id": employee_cafe.cafe_id
+            if employee_cafe is not None else None,
+             "gender": instance.get_gender_display().upper()
+             if instance.gender else None}
+        )
         return data
 
     class Meta:
         model = Employee
-        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe_id"]
+        fields = ["id", "name", "email_address", "phone_number", "gender", "cafe_id",
+                  "cafe"]
+        read_only_fields = ["cafe"]
 
 
 class EmployeeListSerializer(serializers.ModelSerializer):
