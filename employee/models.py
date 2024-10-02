@@ -14,13 +14,17 @@ class Employee(models.Model):
     gender = models.CharField(choices=Gender.choices, max_length=2)
 
     def save(self, **kwargs) -> None:
+        id_max = None
         if not self.id:
             id_max = Employee.objects.aggregate(id_max=Max('id'))['id_max']
-            if id_max is not None:
+            if id_max:
                 id_max_split = id_max.split("UI")
                 if len(id_max_split) > 1:
                     id_max_int = int(id_max.split("UI")[1])
                     self.id = "{}{:07d}".format('UI', id_max_int + 1)
             else:
                 self.id = "{}{:07d}".format('UI', 1)
+        if not self.id:
+            raise RuntimeError(
+                "Unable to generate id for the db {} and {}".format(id_max, self.id))
         super().save(**kwargs)

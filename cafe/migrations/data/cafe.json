@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Simpson",
+    "description": "Cafe serves coffee, tea, cakes",
+    "location": "SG",
+    "logo": "cafe/migrations/assets/cafe1.jpeg"
+  },
+  {
+    "name": "Jake",
+    "description": "Cafe serves coffee, cakes",
+    "location": "DZ",
+    "logo": "cafe/migrations/assets/cafe2.png"
+  },
+  {
+    "name": "Rita",
+    "description": "Cafe serves coffee, tea, cakes",
+    "location": "IL"
+  },
+  {
+    "name": "Milo",
+    "description": "Cafe serves coffee, milo, cakes",
+    "location": "SG",
+    "logo": "cafe/migrations/assets/cafe3.jpeg"
+  },
+  {
+    "name": "Gina",
+    "description": "Cafe serves coffee, tea, pasta",
+    "location": "SG",
+    "logo": "cafe/migrations/assets/cafe4.png"
+  }
+]
