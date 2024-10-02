@@ -1,7 +1,10 @@
 import json
 import random
+from datetime import timedelta
 
+import pytz
 from django.db import migrations
+from django.utils import timezone
 
 
 def generate_id(e, index):
@@ -35,6 +38,20 @@ def load_employee(apps, schema_editor):
     employee_cafe_model.objects.bulk_create(emp_cafe_list)
 
 
+def load_start_date(apps, schema_editor):
+    employee_cafe_model = apps.get_model('cafe', 'EmployeeCafe')
+    updated_emp_cafe_list = []
+    for emp_cafe in employee_cafe_model.objects.all():
+        days = random.randint(0, 3)
+        hours = random.randint(0, 10)
+        start_date = (timezone.now() - timedelta(days=days, hours=hours)).replace(
+            tzinfo=pytz.UTC)
+        emp_cafe.employee_start_date = start_date
+        updated_emp_cafe_list.append(emp_cafe)
+    employee_cafe_model.objects.bulk_update(updated_emp_cafe_list,
+                                            ['employee_start_date'])
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ('employee', '0002_alter_employee_phone_number'),
@@ -43,4 +60,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(load_employee),
+        migrations.RunPython(load_start_date)
     ]
