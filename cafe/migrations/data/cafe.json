@@ -6,24 +6,24 @@
     "logo": "cafe/migrations/assets/cafe1.jpeg"
   },
   {
-    "name": "Jake",
+    "name": "Jake cafe",
     "description": "Cafe serves coffee, cakes",
     "location": "DZ",
     "logo": "cafe/migrations/assets/cafe2.png"
   },
   {
-    "name": "Rita",
+    "name": "Rita cafe",
     "description": "Cafe serves coffee, tea, cakes",
     "location": "IL"
   },
   {
-    "name": "Milo",
+    "name": "Milo cafe",
     "description": "Cafe serves coffee, milo, cakes",
     "location": "SG",
     "logo": "cafe/migrations/assets/cafe3.jpeg"
   },
   {
-    "name": "Gina",
+    "name": "Gina cafe",
     "description": "Cafe serves coffee, tea, pasta",
     "location": "SG",
     "logo": "cafe/migrations/assets/cafe4.png"
