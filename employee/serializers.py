@@ -27,7 +27,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         cafe_id = validated_data.pop("cafe_id", None)
         print(validated_data)
         employee = Employee.objects.create(**validated_data)
-        if cafe_id is not None:
+        if cafe_id:
             if Cafe.objects.filter(id=cafe_id).exists():
                 EmployeeCafe.objects.create(cafe_id=cafe_id, employee=employee)
             else:
@@ -63,15 +63,11 @@ class EmployeeUpdateSerializer(serializers.ModelSerializer):
         for item, value in validated_data.items():
             setattr(employee, item, value)
         employee.save()
-        if cafe_id is not None:
-            print(cafe_id)
+        if cafe_id:
             if Cafe.objects.filter(id=cafe_id).exists():
-                print("cafe exists")
                 if EmployeeCafe.objects.filter(employee=employee).exists():
                     EmployeeCafe.objects.filter(employee=employee).delete()
-                    print("deleting previous cafe")
                 EmployeeCafe.objects.create(cafe_id=cafe_id, employee=employee)
-                print("added new cafe")
             else:
                 raise serializers.ValidationError(
                     "Cafe does not exist to assign employee. "
